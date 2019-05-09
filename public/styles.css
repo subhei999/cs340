@@ -1,0 +1,407 @@
+div{
+  position: absolute;
+  margin: 0%;
+
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: rgb(49, 49, 49);
+ 
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.active {
+  background-color: rgb(17, 140, 255);
+}
+body
+{
+  position: absolute;
+  top: 0%;
+  width:100%;
+  margin: 0%;
+  /*background-image: url("galaxy.jpg");*/
+  background-color: #cccccc;
+
+}
+
+
+
+/* Full-width input fields */
+input[type=text], input[type=password] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  background-color: #f44336;
+}
+
+/* Center the image and position the close button */
+.imgcontainer {
+  text-align: center;
+  margin: 24px 0 12px 0;
+  position: relative;
+}
+
+img.avatar {
+  width: 40%;
+  border-radius: 50%;
+}
+
+.container {
+  padding: 16px;
+}
+
+span.psw {
+  float: right;
+  padding-top: 16px;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.close {
+  position: absolute;
+  right: 25px;
+  top: 0;
+  color: #000;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: red;
+  cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+  from {-webkit-transform: scale(0)} 
+  to {-webkit-transform: scale(1)}
+}
+  
+@keyframes animatezoom {
+  from {transform: scale(0)} 
+  to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+  span.psw {
+     display: block;
+     float: none;
+  }
+  .cancelbtn {
+     width: 100%;
+  }
+
+}
+
+
+.button {
+	-moz-box-shadow: 3px 4px 0px 0px #8a2a21;
+	-webkit-box-shadow: 3px 4px 0px 0px #8a2a21;
+	box-shadow: 3px 4px 0px 0px #8a2a21;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #c62d1f), color-stop(1, #f24437));
+	background:-moz-linear-gradient(top, #c62d1f 5%, #f24437 100%);
+	background:-webkit-linear-gradient(top, #c62d1f 5%, #f24437 100%);
+	background:-o-linear-gradient(top, #c62d1f 5%, #f24437 100%);
+	background:-ms-linear-gradient(top, #c62d1f 5%, #f24437 100%);
+	background:linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c62d1f', endColorstr='#f24437',GradientType=0);
+	background-color:#c62d1f;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	border:1px solid #d02718;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding:7px 19px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #810e05;
+}
+.button:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f24437), color-stop(1, #c62d1f));
+	background:-moz-linear-gradient(top, #f24437 5%, #c62d1f 100%);
+	background:-webkit-linear-gradient(top, #f24437 5%, #c62d1f 100%);
+	background:-o-linear-gradient(top, #f24437 5%, #c62d1f 100%);
+	background:-ms-linear-gradient(top, #f24437 5%, #c62d1f 100%);
+	background:linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f24437', endColorstr='#c62d1f',GradientType=0);
+	background-color:#f24437;
+}
+.button:active {
+	position:relative;
+	top:1px;
+}
+table.myTable {
+    position: absolute;
+    top:100px;
+    left:100px;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  border: 1px solid #1C6EA4;
+  background-color: rgb(80, 80, 80);
+  width: 800px;
+  height: 100px;
+  text-align: center;
+  border-collapse: collapse;
+}
+table.myTable td, table.myTable th {
+  border: 0px solid #AAAAAA;
+  padding: 4px 0px;
+}
+table.myTable tbody td {
+  font-size: 17px;
+}
+table.myTable tr:nth-child(even) {
+  background: rgb(79, 100, 119);
+}
+
+table.myTable thead {
+  background: #A40000;
+  background: -moz-linear-gradient(top, #bb4040 0%, #ad1919 66%, #A40000 100%);
+  background: -webkit-linear-gradient(top, #bb4040 0%, #ad1919 66%, #A40000 100%);
+  background: linear-gradient(to bottom, #bb4040 0%, #ad1919 66%, #A40000 100%);
+  border-bottom: 2px solid #444444;
+}
+table.myTable thead th {
+  font-size: 18px;
+  font-weight: bold;
+  color: #FFFFFF;
+  text-align: center;
+  border-left: 2px solid #D0E4F5;
+}
+table.myTable thead th:first-child {
+  border-left: none;
+}
+
+table.myTable tfoot {
+  font-size: 13px;
+  font-weight: bold;
+  color: #FFFFFF;
+  background: #D0E4F5;
+  background: -moz-linear-gradient(top, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
+  background: -webkit-linear-gradient(top, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
+  background: linear-gradient(to bottom, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
+  border-top: 2px solid #444444;
+}
+table.myTable tfoot td {
+  font-size: 13px;
+}
+table.myTable tfoot .links {
+  text-align: right;
+}
+table.myTable tfoot .links a{
+  display: inline-block;
+  background: #1C6EA4;
+  color: #FFFFFF;
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+input[type=number]{
+    width: 60px;
+} 
+
+input[type=date]{
+    width: 130px;
+}
+
+
+.form-inline {  
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.form-inline label {
+  margin: 5px 10px 5px 0;
+}
+
+.form-inline input {
+  vertical-align: middle;
+  margin: 5px 10px 5px 0;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.form-inline button {
+  padding: 10px 20px;
+  background-color: dodgerblue;
+  border: 1px solid #ddd;
+  color: white;
+  cursor: pointer;
+}
+
+.form-inline button:hover {
+  background-color: royalblue;
+}
+
+@media (max-width: 800px) {
+  .form-inline input {
+    margin: 10px 0;
+  }
+  
+  .form-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+body { background-color: #30303d; color: #fff; }
+#popRacediv {
+  position:absolute;
+  width: 100%;
+  height:100%;
+}
+#popClassdiv {
+  position:absolute;
+  width: 100%;
+  height:100%;
+}
+
+
+
+#mapdiv {
+  width: 100%;
+  height: 98vh;
+}
+
+
+/* Tooltip container */
+.item-icon {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.item-icon .item-tooltip-container {
+  visibility: hidden;
+
+  width: 275px;
+  
+  display: block;
+  overflow: auto;
+  background-color:rgba(5, 11, 44, 0.8);
+  border-radius: 5px;
+  border: 1px ridge rgb(155, 155, 155);
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+
+/* Show the tooltip text when you mouse over the tooltip contasiner */
+.item-icon:hover .item-tooltip-container {
+  visibility: visible;
+  position: fixed;
+  top:0px;
+}
+
+.item-name{
+  -webkit-text-stroke-width: 0.2px;
+  font-size: 16px;
+  text-align: left;
+  margin-left: 5px;
+  margin-top: 5px;
+  font-weight: bold;
+  filter:brightness(200%)
+  
+}
+
+.item-text{
+  -webkit-text-stroke-width: 0.2px;
+  font-size: 14px;
+  text-align: left;
+  margin-left: 5px;
+  filter:brightness(200%)
+  
+}
+
+#item-query-result
+{
+  position: relative;
+  background-color: rgb(93, 128, 150);
+  top:0px;
+  width:50%;
+  height:500px;
+  display: block;
+  overflow: auto;
+  
+}

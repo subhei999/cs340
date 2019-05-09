@@ -1,0 +1,18 @@
+DROP TABLE IF EXISTS `db_ItemClass_5875`; 
+CREATE TABLE `db_ItemClass_5875` ( `ID` INT NOT NULL DEFAULT '0', `SubclassMapID` INT NOT NULL DEFAULT '0', `Flags` INT NOT NULL DEFAULT '0', `Classname_enUS` TEXT NULL, `Classname_enGB` TEXT NULL, `Classname_koKR` TEXT NULL, `Classname_frFR` TEXT NULL, `Classname_deDE` TEXT NULL, `Classname_enCN` TEXT NULL, `Classname_zhCN` TEXT NULL, `Classname_enTW` TEXT NULL, `Classname_Mask` INT UNSIGNED NOT NULL DEFAULT '0', PRIMARY KEY (`ID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8; 
+INSERT INTO `db_ItemClass_5875` VALUES (0,0,0,"Consumable","","","","","","","",7274526); 
+INSERT INTO `db_ItemClass_5875` VALUES (1,1,0,"Container","","","","","","","",7274526); 
+INSERT INTO `db_ItemClass_5875` VALUES (2,2,1,"Weapon","","","","","","","",7274526); 
+INSERT INTO `db_ItemClass_5875` VALUES (3,3,0,"Jewelry(OBSOLETE)","","","","","","","",7274510); 
+INSERT INTO `db_ItemClass_5875` VALUES (4,4,0,"Armor","","","","","","","",7274526); 
+INSERT INTO `db_ItemClass_5875` VALUES (5,5,0,"Reagent","","","","","","","",7274526); 
+INSERT INTO `db_ItemClass_5875` VALUES (6,6,0,"Projectile","","","","","","","",7274526); 
+INSERT INTO `db_ItemClass_5875` VALUES (7,7,0,"Trade Goods","","","","","","","",7274526); 
+INSERT INTO `db_ItemClass_5875` VALUES (8,8,0,"Generic(OBSOLETE)","","","","","","","",7274510); 
+INSERT INTO `db_ItemClass_5875` VALUES (9,9,0,"Recipe","","","","","","","",983054); 
+INSERT INTO `db_ItemClass_5875` VALUES (10,10,0,"Money(OBSOLETE)","","","","","","","",7274510); 
+INSERT INTO `db_ItemClass_5875` VALUES (11,6,0,"Quiver","","","","","","","",7274526); 
+INSERT INTO `db_ItemClass_5875` VALUES (12,0,0,"Quest","","","","","","","",7274526); 
+INSERT INTO `db_ItemClass_5875` VALUES (13,0,0,"Key","","","","","","","",7274526); 
+INSERT INTO `db_ItemClass_5875` VALUES (14,1,0,"Permanent(OBSOLETE)","","","","","","","",7274526); 
+INSERT INTO `db_ItemClass_5875` VALUES (15,0,0,"Miscellaneous","","","","","","","",983054); 

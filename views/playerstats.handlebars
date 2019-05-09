@@ -1,0 +1,55 @@
+<h1>Player View</h1>
+<h2>Display Player count for each faction and ratio.</h2>
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/dark.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="static/piechart.js"></script>
+
+<!-- HTML -->
+<div style="top:0px;right:0%;width:700px;height:300px;">
+    <div id="popRacediv"></div>
+</div>
+<div style="top:400px;right:0%;width:700px;height:300px;">
+    <div id="popClassdiv"></div>
+</div>
+
+<h2>Wealthiest player on server is {query result}</h2>
+<h2>Section to create a new player from drop down account list</h2>
+<form class="form-inline"style="width:50%; background-color:rgba(255, 255, 255,0.6)">
+  <select name="Account">
+    <option disabled selected value> -- select an account -- </option>
+    <option value="q1">query result 1</option>
+    <option value="q2">query result 2</option>
+  </select>
+  <label>Player Name:</label>
+  <input style="width:200px;" type="text" placeholder="Enter player name..." name="playerName">
+  <label>Race:</label>
+    <select name="Race">
+    <option disabled selected value> -- select a race -- </option>
+    <option value="Human">Human</option>
+    <option value="Orc">Orc</option>
+    </select>
+      <label>Class:</label>
+    <select name="Class">
+    <option disabled selected value> -- select a class -- </option>
+    <option value="Rogue">Human</option>
+    <option value="Warrior">Orc</option>
+    </select>
+  <br><br>
+  <button style="width:100px;" type="button" onclick="alert('Not implemented')">Create Player</button>
+</form>
+<h2>Inventory Editor</h2>
+<form class="form-inline"style="width:50%; background-color:rgba(255, 255, 255,0.6)">
+  <label>Item Name:</label>
+  <input style="width:200px;" type="text" placeholder="Enter item name..." name="itemName">
+  <label>Player:</label>
+  <select name="Player">
+    <option disabled selected value> -- select a player -- </option>
+    <option value="q1">query result 1</option>
+    <option value="q2">query result 2</option>
+  </select>
+  <br><br>
+  <button style="width:100px;" type="button" onclick="alert('Not implemented')">Add to Inventory</button>
+</form>
