@@ -1,9 +1,11 @@
-# Serving static files in Node.js sample for Google App Engine
+# MMO DB Project
 
-This sample demonstrates serving static files in a Node.js app for [Google App Engine](https://cloud.google.com/appengine) Node.js [standard environment](https://cloud.google.com/appengine/docs/standard/nodejs)
-and [flexible environment](https://cloud.google.com/appengine/docs/flexible/nodejs)
+Simple DB project working with classic WoW items as resources using node.js as backend server connected to MySQL DB.
 
 ## Running locally
+Must be connected to OSU vpn to access MySQL database.
 
-Refer to the [appengine/README.md](../README.md) file for instructions on
-running and deploying.
+npm install
+node app.js
+http://localhost:8080
+
