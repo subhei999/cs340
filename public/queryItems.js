@@ -1,13 +1,8 @@
-
-
-const HOST = "http://localhost:8080";
-
-
+const HOST = "http://flip3.engr.oregonstate.edu:8080";
+//const HOST = "http://localhost:8080";
 
 function QueryItems(itemName,itemQuality)
 {
-    //var itemName = "";
-    //var itemQuality= "";
     var itemClass = ""
 
     var req = new XMLHttpRequest();
@@ -43,14 +38,6 @@ function GetIcon(name)
     icon.setAttribute("src",path);
     return container;
 }
-
-window.onmousemove = function (e) {
-    var x = e.clientX,
-        y = e.clientY;
-   // activetooltip
-    //tooltipSpan.style.top = (y + 20) + 'px';
-    //tooltipSpan.style.left = (x + 20) + 'px';
-};
 
 
 function CreateItemToolTip(itemresult)
@@ -149,7 +136,7 @@ function BuildItemTable(queryResult)
 
         itemSearchButton.addEventListener('click', function(){
             var qualityIdx = document.getElementById("item-quality").selectedIndex;
-            alert(document.getElementsByTagName("option")[qualityIdx].value);
+            
 
             var itemQuality = document.getElementsByTagName("option")[qualityIdx].value;
             var itemName = document.getElementById("item-name").value;
