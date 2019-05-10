@@ -1,5 +1,5 @@
-const HOST = "http://flip3.engr.oregonstate.edu:8080";
-//const HOST = "http://localhost:8080";
+//const HOST = "http://flip3.engr.oregonstate.edu:8080";
+const HOST = "http://localhost:8080";
 function insert()
 {
     var name = document.getElementById("name_input").value;

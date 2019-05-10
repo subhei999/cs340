@@ -380,8 +380,9 @@ body { background-color: #30303d; color: #fff; }
   text-align: left;
   margin-left: 5px;
   margin-top: 5px;
+  margin-bottom:2px;
   font-weight: bold;
-  filter:brightness(200%)
+  filter:brightness(100%)
   
 }
 
@@ -390,6 +391,8 @@ body { background-color: #30303d; color: #fff; }
   font-size: 14px;
   text-align: left;
   margin-left: 5px;
+  margin-top: 1px;
+  margin-bottom: 1px;
   filter:brightness(200%)
   
 }
@@ -403,5 +406,16 @@ body { background-color: #30303d; color: #fff; }
   height:500px;
   display: block;
   overflow: auto;
+  
+}
+
+#item-table
+{
+  text-align: left;
+  
+}
+#item-table td
+{
+  min-width: 100px;
   
 }

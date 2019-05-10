@@ -100,16 +100,19 @@ app.get('/delete',function(req,res,next){
 //item queries
 app.get('/queryitem',function(req,res,next){
   var context = {};
-  mysql.pool.query("SELECT MMIT.name, MMIT.ItemLevel, MIQ.quality, MIB.Description, MIC.Classname_enUS, MISC.subclass,MII.inventoryIcon,MMIT.Description as FlavorText,MIQ.Color,MMIT.RequiredLevel,MIB.Description as BindingText\
+  mysql.pool.query("SELECT MMIT.name, MMIT.ItemLevel, MIQ.quality, MIB.Description,\
+                  MIC.Classname_enUS, MISC.subclass,MII.inventoryIcon,MMIT.Description as FlavorText,\
+                  MIQ.Color,MMIT.RequiredLevel,MIB.Description as BindingText,\
+                  MMIT.maxcount,MMIT.dmg_min1,MMIT.dmg_max1\
     FROM mmo_itemTemplate MMIT\
-    INNER JOIN mmo_itemBonding MIB on MIB.id = MMIT.itemBonding_id\
+    LEFT JOIN mmo_itemBonding MIB on MIB.id = MMIT.itemBonding_id\
     INNER JOIN mmo_itemClass MIC on MIC.ID = MMIT.itemClass_id\
-    INNER JOIN mmo_itemSubClass MISC on MISC.class_id = MIC.ID\
+    LEFT JOIN mmo_itemSubClass MISC on MISC.class_id = MIC.ID\
     INNER JOIN mmo_itemQuality MIQ on MIQ.id = MMIT.itemQuality_id\
-    INNER JOIN mmo_itemIcon MII on MII.ID = MMIT.itemIcon_id\
+    LEFT JOIN mmo_itemIcon MII on MII.ID = MMIT.itemIcon_id\
     WHERE MISC.subclass_id = MMIT.itemSubClass_id AND MIC.Classname_enUS like ? AND MMIT.name like ? AND MIQ.quality like ?\
     order by MMIT.ItemLevel desc\
-    LIMIT 100", ['%'+req.query.itemClass,req.query.itemName+'%',req.query.itemQuality+"%"],function(err, rows, fields){
+    LIMIT 500", ['%'+req.query.itemClass,req.query.itemName+'%',req.query.itemQuality+"%"],function(err, rows, fields){
     if(err){
       next(err);
       return;

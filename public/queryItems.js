@@ -1,5 +1,25 @@
-const HOST = "http://flip3.engr.oregonstate.edu:8080";
-//const HOST = "http://localhost:8080";
+//const HOST = "http://flip3.engr.oregonstate.edu:8080";
+const HOST = "http://localhost:8080";
+
+function appendItemTableRow(rowData,table)
+{
+    var row = document.createElement("tr");
+    rowData.forEach(columnData => {
+        var column = document.createElement("td");
+        //column.innerText = columnData;
+        if(typeof columnData === 'object')
+        {
+            column.appendChild(columnData);
+        }
+        else
+        {
+            column.innerText = columnData;
+        }
+        row.appendChild(column);
+      });
+    table.appendChild(row);
+}
+
 
 function QueryItems(itemName,itemQuality)
 {
@@ -49,20 +69,40 @@ function CreateItemToolTip(itemresult)
     itemName.setAttribute("class","item-name");
     itemName.style.color = itemresult.Color;
     itemName.innerText = itemresult.name;
+    container.appendChild(itemName);
 
     var requiredLevel = document.createElement("p");
     requiredLevel.setAttribute("class","item-text");
     requiredLevel.innerText = "Requires Level "+ itemresult.RequiredLevel;
 
-    var bindingText = document.createElement("p");
-    bindingText.setAttribute("class","item-text");
-    bindingText.innerText = itemresult.BindingText;
+    if(!(itemresult.BindingText === "No binding"))
+    {
+        var bindingText = document.createElement("p");
+        bindingText.setAttribute("class","item-text");
+        bindingText.innerText = itemresult.BindingText;
+        container.appendChild(bindingText);
+    }
 
-    
-    container.appendChild(itemName);
-    container.appendChild(bindingText);
+   
+
+
+    if(itemresult.maxcount == 1)
+    {
+        var unique = document.createElement("p");
+        unique.setAttribute("class","item-text");
+        unique.innerText = "Unique";
+        container.appendChild(unique);
+    }
+
     container.appendChild(requiredLevel);
 
+    if(itemresult.dmg_min1>0)
+    {
+        var physicalDamage = document.createElement("p");
+        physicalDamage.setAttribute("class","item-text");
+        physicalDamage.innerText = "Damage "+itemresult.dmg_min1+" - "+itemresult.dmg_max1;
+        container.appendChild(physicalDamage);
+    }
     if(!(itemresult.FlavorText.length === 0))
     {
         var flavorText = document.createElement("p");
@@ -79,23 +119,31 @@ function CreateItemToolTip(itemresult)
 
 function BuildItemTable(queryResult)
 {
+
+
     var i = 0;
     var j = 0;
+
+    var table = document.getElementById("item-table");
+   
+    var queryTable = document.getElementById("item-query-result");
+    queryTable.appendChild(table);
+
+
     queryResult.forEach(item => {
 
 
         var currentIcon = GetIcon(item.inventoryIcon);
-        currentIcon.style.left = i*64+"px";
-        currentIcon.style.top = j*64+"px";
-        currentIcon.style.position="absolute";
-
-
-
-        var queryTable = document.getElementById("item-query-result");
-        queryTable.appendChild(currentIcon);
-
         var itemTooltip = CreateItemToolTip(item);
         currentIcon.appendChild(itemTooltip);
+
+
+        var rowData = [currentIcon,item.name,item.ItemLevel,item.RequiredLevel,item.subclass];
+        appendItemTableRow(rowData,table);
+        
+        //queryTable.appendChild(currentIcon);
+
+
 
         currentIcon.addEventListener("mouseover", function( event ) { 
 
@@ -123,6 +171,11 @@ function BuildItemTable(queryResult)
       
 }
 
+function GetItemDamage(item)
+{
+    var minDmg;
+
+}
 
 
 (function(window, document, undefined){
@@ -141,9 +194,9 @@ function BuildItemTable(queryResult)
             var itemQuality = document.getElementsByTagName("option")[qualityIdx].value;
             var itemName = document.getElementById("item-name").value;
 
-            var queryTable = document.getElementById("item-query-result");
-            while (queryTable.firstChild) {
-                queryTable.removeChild(queryTable.firstChild);
+            var table = document.getElementById("item-table");
+            while (table.firstChild) {
+                table.removeChild(table.firstChild);
             }
 
             QueryItems(itemName,itemQuality);
