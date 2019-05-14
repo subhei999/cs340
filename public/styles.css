@@ -396,6 +396,20 @@ body { background-color: #30303d; color: #fff; }
   filter:brightness(200%)
   
 }
+.item-text-right{
+  height: 0px;
+  position: relative;
+  right:0px;
+  -webkit-text-stroke-width: 0.2px;
+  font-size: 14px;
+  text-align: right;
+  margin-right: 5px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  filter:brightness(200%)
+  
+}
+
 
 #item-query-result
 {

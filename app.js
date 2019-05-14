@@ -71,7 +71,7 @@ app.get('/modify-session', (req, res) => {
 //basic table queries
 app.get('/table',function(req,res,next){
   var context = {};
-  mysql.pool.query('SELECT * FROM ' + req.query.tablename, function(err, rows, fields){
+  mysql.pool.query('SELECT * FROM ' + req.query.tablename +' LIMIT 1000', function(err, rows, fields){
     if(err){
       next(err);
       return;
@@ -100,19 +100,61 @@ app.get('/delete',function(req,res,next){
 //item queries
 app.get('/queryitem',function(req,res,next){
   var context = {};
-  mysql.pool.query("SELECT MMIT.name, MMIT.ItemLevel, MIQ.quality, MIB.Description,\
-                  MIC.Classname_enUS, MISC.subclass,MII.inventoryIcon,MMIT.Description as FlavorText,\
-                  MIQ.Color,MMIT.RequiredLevel,MIB.Description as BindingText,\
-                  MMIT.maxcount,MMIT.dmg_min1,MMIT.dmg_max1\
-    FROM mmo_itemTemplate MMIT\
+  mysql.pool.query(
+    "SELECT MMIT.name, MMIT.ItemLevel, MIQ.quality, MIB.Description,\
+     MIC.Classname_enUS, MISC.subclass,MII.inventoryIcon,MMIT.Description as FlavorText,\
+     MIQ.Color,MMIT.RequiredLevel,MIB.Description as BindingText,\
+     MMIT.maxcount,MMIT.delay as attack_time, MMIT.armor, MMIT.MaxDurability\
+     FROM mmo_itemTemplate MMIT\
     LEFT JOIN mmo_itemBonding MIB on MIB.id = MMIT.itemBonding_id\
     INNER JOIN mmo_itemClass MIC on MIC.ID = MMIT.itemClass_id\
     LEFT JOIN mmo_itemSubClass MISC on MISC.class_id = MIC.ID\
     INNER JOIN mmo_itemQuality MIQ on MIQ.id = MMIT.itemQuality_id\
     LEFT JOIN mmo_itemIcon MII on MII.ID = MMIT.itemIcon_id\
     WHERE MISC.subclass_id = MMIT.itemSubClass_id AND MIC.Classname_enUS like ? AND MMIT.name like ? AND MIQ.quality like ?\
-    order by MMIT.ItemLevel desc\
-    LIMIT 500", ['%'+req.query.itemClass,req.query.itemName+'%',req.query.itemQuality+"%"],function(err, rows, fields){
+    ORDER BY MMIT.ItemLevel DESC\
+    LIMIT 500",
+     ['%'+req.query.itemClass,req.query.itemName+'%',req.query.itemQuality+"%"],function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+
+app.get('/queryitemdamage',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MIT.name,MIDT.Description as dmg_type,MID.dmg_min,MID.dmg_max\
+    FROM mmo_itemDmgMinMax MID\
+    INNER JOIN mmo_itemTemplate MIT ON MIT.id = MID.item_id\
+    INNER JOIN mmo_itemDmgType MIDT ON MIDT.id = MID.dmg_type\
+    ORDER BY MIT.id, MID.dmg_type"
+    ,function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+
+app.get('/queryitemstats',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MIT.name,MISV.statValue,MIST.Description as stat_type\
+  FROM mmo_itemStatValue MISV\
+  INNER JOIN mmo_itemTemplate MIT ON MIT.id = MISV.item_id\
+  INNER JOIN mmo_itemStatType MIST ON MIST.id = MISV.statType_id\
+  ORDER BY MIT.id, MISV.statType_id"
+    ,function(err, rows, fields){
     if(err){
       next(err);
       return;

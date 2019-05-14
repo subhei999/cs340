@@ -13,8 +13,6 @@ WHERE MISC.subclass_id = MMIT.itemSubClass_id
 order by MMIT.ItemLevel desc
 LIMIT 100
 
-
-
 -- get all characters created in the MMO and display name,race,class,lvl sort by lvl
 -- display this when going to Character page on website
 SELECT MCH.name, MCH.lvl, MR.name as 'Race', MCL.name as 'Class' 
@@ -40,12 +38,12 @@ INNER JOIN mmo_faction MF on MF.id = MR.faction_id
 WHERE MF.name = :req.query.factionName
 
 -- get wealthiest player on the server based on aggregate vendorprice of items in inventory
-SELECT MCH.name, sum(MI.vendorPrice) as 'Net Worth'
+SELECT MCH.name, sum(MIT.SellPrice) as 'Net Worth'
 FROM mmo_character MCH
 INNER JOIN mmo_inventory MINV on MINV.character_id = MCH.id
-INNER JOIN mmo_item MI on MI.id = MINV.item_id
+INNER JOIN mmo_itemTemplate MIT on MIT.id = MINV.item_id
 GROUP BY MCH.name
-ORDER BY sum(MI.vendorPrice) desc
+ORDER BY sum(MIT.SellPrice) desc
 LIMIT 1
 
 -- get played time and number of characters on account based on aggregate session history of characters on each account
@@ -55,7 +53,20 @@ RIGHT JOIN mmo_character MCH on MCH.id = MS.character_id
 RIGHT JOIN mmo_account MA on MA.id = MCH.account_id
 GROUP BY MA.email
 
+-- cache item damage in an array to help populate tooltips on item search
+SELECT MIT.name,MIDT.Description as dmg_type,MID.dmg_min,MID.dmg_max
+    FROM mmo_itemDmgMinMax MID
+    INNER JOIN mmo_itemTemplate MIT ON MIT.id = MID.item_id
+    INNER JOIN mmo_itemDmgType MIDT ON MIDT.id = MID.dmg_type
+    ORDER BY MIT.id, MID.dmg_type
+  
+-- cache item stats in an array to help populate tooltip on item search
 
+SELECT MIT.name,MISV.statValue,MIST.Description as stat_type
+  FROM mmo_itemStatValue MISV
+  INNER JOIN mmo_itemTemplate MIT ON MIT.id = MISV.item_id
+  INNER JOIN mmo_itemStatType MIST ON MIST.id = MISV.statType_id
+  ORDER BY MIT.id, MISV.statType_id
 
 --generic row delete for any table on modify tables page
 DELETE FROM :req.query.tableName WHERE id = :req.query.id
@@ -83,6 +94,104 @@ INSERT INTO mmo_character (name, race_id, class_id) VALUES (:nameInput, :raceInp
 -- rename character
 UPDATE mmo_character SET name = :nameInput  WHERE id= :character_ID_from_dropdown_Input
 
+-- get all stat types/values from items. Used this to creat mmo_itemStatValue table from mmo_itemTemplate table then dropped the stat types/values from mmo_itemTemplate
+SELECT * 
+FROM ((select
+  MMIT.id as item_id,
+  MMIT.stat_type1 as stat_type,
+  MMIT.stat_value1 as stat_value
+FROM mmo_itemTemplate MMIT
+ )
+UNION
+(
+select
+  MMIT.id as item_id,
+  MMIT.stat_type2,
+    MMIT.stat_value2
+FROM mmo_itemTemplate MMIT
+)
+UNION
+(
+select
+  MMIT.id,
+  MMIT.stat_type3,
+    MMIT.stat_value3
+FROM mmo_itemTemplate MMIT
+)UNION
+(
+select
+  MMIT.id as item_id,
+  MMIT.stat_type4,
+    MMIT.stat_value4
+FROM mmo_itemTemplate MMIT
+)UNION
+(
+select
+  MMIT.id as item_id,
+  MMIT.stat_type5,
+    MMIT.stat_value5
+FROM mmo_itemTemplate MMIT
+)UNION
+(
+select
+  MMIT.id,
+  MMIT.stat_type6,
+    MMIT.stat_value6
+FROM mmo_itemTemplate MMIT
+)UNION
+(
+select
+  MMIT.id as item_id,
+  MMIT.stat_type7,
+    MMIT.stat_value7
+FROM mmo_itemTemplate MMIT
+)     )as t1
+WHERE t1.stat_value != 0
+ORDER BY t1.item_id
 
+-- do the same thing above for the dmg type/min/max
 
-
+SELECT * 
+FROM ((select
+  MMIT.id as item_id,
+  MMIT.dmg_type1 as dmg_type,
+  MMIT.dmg_min1 as dmg_min,
+  MMIT.dmg_max1 as dmg_max
+FROM mmo_itemTemplate MMIT
+ )
+UNION
+(
+select
+  MMIT.id as item_id,
+  MMIT.dmg_type2 as dmg_type,
+  MMIT.dmg_min2 as dmg_min,
+  MMIT.dmg_max2 as dmg_max
+FROM mmo_itemTemplate MMIT
+)
+UNION
+(
+select
+  MMIT.id,
+  MMIT.dmg_type3 as dmg_type,
+  MMIT.dmg_min3 as dmg_min,
+  MMIT.dmg_max3 as dmg_max
+FROM mmo_itemTemplate MMIT
+)UNION
+(
+select
+  MMIT.id as item_id,
+  MMIT.dmg_type4 as dmg_type,
+  MMIT.dmg_min4 as dmg_min,
+  MMIT.dmg_max4 as dmg_max
+FROM mmo_itemTemplate MMIT
+)UNION
+(
+select
+  MMIT.id as item_id,
+  MMIT.dmg_type5 as dmg_type,
+  MMIT.dmg_min5 as dmg_min,
+  MMIT.dmg_max5 as dmg_max
+FROM mmo_itemTemplate MMIT
+))as t1
+WHERE t1.dmg_min != 0
+ORDER BY t1.item_id
