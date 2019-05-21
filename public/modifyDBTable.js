@@ -1,37 +1,140 @@
 //const HOST = "http://flip3.engr.oregonstate.edu:8080";
 const HOST = "http://localhost:8080";
-function insert()
+
+
+function GetRequest(url,qParams,qValues,callback)
 {
-    var name = document.getElementById("name_input").value;
-    var reps = document.getElementById("reps_input").value;
-    var weight = document.getElementById("weight_input").value;
-    var unit = document.getElementById("unit_input").value;
-    var date = document.getElementById("date_input").value;
-    
-    name = name.trim();
-    if (name == null || name=="")
+    var req = new XMLHttpRequest();
+
+    var reqStr = url + '?';
+
+    if(qParams.length != qValues.length)
     {
-        alert("Invalid name");
+        console.log("Invalid Get Request");
         return;
     }
-    var req = new XMLHttpRequest();
-    req.open("GET",HOST+"/insert?name="+name+"&reps="+reps+"&weight="+weight+"&date="+date+"&unit="+unit,true);
+
+    for (let index = 0; index < qParams.length; index++) {
+        const param = qParams[index];
+        const value = qValues[index];
+
+        reqStr += param + '=' + value;
+        
+        if(index != qParams.length - 1)
+            reqStr += '&';
+
+    }
+    req.open("GET",reqStr,true);
     req.send(null);
 
     req.onreadystatechange = function() {//async
         if(req.readyState == 4 && req.status == 200) 
         {
+            var tableName = document.getElementsByClassName("databaseTable")[0].id;
+            callback(tableName);
+               
 
-            updateTable();
-
+            
         }
     }
-    
 }
 
 
+
+
+function mmo_account_insert()
+{
+    var email = document.getElementsByName('email')[0].value;
+    var password = document.getElementsByName('password')[0].value;
+    var banned = document.getElementsByName('Banned')[0].value;
+    var offense = document.getElementsByName('Offense')[0].value;
+
+    GetRequest('/insertaccount',['email','password','banned','offense'],[email,password,banned,offense],updateTable);
+}
+
+// function mmo_character_insert()
+// {
+//     var email = document.getElementsByName('email')[0].value;
+//     var password = document.getElementsByName('password')[0].value;
+//     var banned = document.getElementsByName('Banned')[0].value;
+//     var offense = document.getElementsByName('Offense')[0].value;
+
+//     GetRequest('/insertaccount',['email','password','banned','offense'],[email,password,banned,offense],updateTable);
+// }
+
+// function mmo_class_insert()
+// {
+//     var email = document.getElementsByName('email')[0].value;
+//     var password = document.getElementsByName('password')[0].value;
+//     var banned = document.getElementsByName('Banned')[0].value;
+//     var offense = document.getElementsByName('Offense')[0].value;
+
+//     GetRequest('/insertaccount',['email','password','banned','offense'],[email,password,banned,offense],updateTable);
+// }
+
+// function mmo_faction_insert()
+// {
+//     var email = document.getElementsByName('email')[0].value;
+//     var password = document.getElementsByName('password')[0].value;
+//     var banned = document.getElementsByName('Banned')[0].value;
+//     var offense = document.getElementsByName('Offense')[0].value;
+
+//     GetRequest('/insertaccount',['email','password','banned','offense'],[email,password,banned,offense],updateTable);
+// }
+
+// function mmo_inventory_insert()
+// {
+//     var email = document.getElementsByName('email')[0].value;
+//     var password = document.getElementsByName('password')[0].value;
+//     var banned = document.getElementsByName('Banned')[0].value;
+//     var offense = document.getElementsByName('Offense')[0].value;
+
+//     GetRequest('/insertaccount',['email','password','banned','offense'],[email,password,banned,offense],updateTable);
+// }
+
+// function mmo_item_insert()
+// {
+//     var email = document.getElementsByName('email')[0].value;
+//     var password = document.getElementsByName('password')[0].value;
+//     var banned = document.getElementsByName('Banned')[0].value;
+//     var offense = document.getElementsByName('Offense')[0].value;
+
+//     GetRequest('/insertaccount',['email','password','banned','offense'],[email,password,banned,offense],updateTable);
+// }
+
+// function mmo_race_insert()
+// {
+//     var email = document.getElementsByName('email')[0].value;
+//     var password = document.getElementsByName('password')[0].value;
+//     var banned = document.getElementsByName('Banned')[0].value;
+//     var offense = document.getElementsByName('Offense')[0].value;
+
+//     GetRequest('/insertaccount',['email','password','banned','offense'],[email,password,banned,offense],updateTable);
+// }
+
+// function mmo_reputation_insert()
+// {
+//     var email = document.getElementsByName('email')[0].value;
+//     var password = document.getElementsByName('password')[0].value;
+//     var banned = document.getElementsByName('Banned')[0].value;
+//     var offense = document.getElementsByName('Offense')[0].value;
+
+//     GetRequest('/insertaccount',['email','password','banned','offense'],[email,password,banned,offense],updateTable);
+// }
+
+// function mmo_session_insert()
+// {
+//     var email = document.getElementsByName('email')[0].value;
+//     var password = document.getElementsByName('password')[0].value;
+//     var banned = document.getElementsByName('Banned')[0].value;
+//     var offense = document.getElementsByName('Offense')[0].value;
+
+//     GetRequest('/insertaccount',['email','password','banned','offense'],[email,password,banned,offense],updateTable);
+// }
+
  function createHTMLTable(target_id,id,data)
   {
+   
     row = data.length;
 
 
@@ -93,9 +196,6 @@ function insert()
                 inputElement = document.createElement("input");
                 inputElement.setAttribute("name",col[y]);
                 inputElement.setAttribute("type","text");
-                //inputElement.setAttribute("type","number");
-                //inputElement.setAttribute("id","name_input");
-                //inputElement.setAttribute("type","date"); 
                 inputElement.setAttribute("size","8");
                 td.appendChild(inputElement);
               
@@ -105,13 +205,12 @@ function insert()
                 {
 
                     var temp_td = document.createElement("td");
-
                     var insert_button = document.createElement("input");
                     insert_button.setAttribute("type","button");
                     insert_button.setAttribute("value","insert");
                     insert_button.setAttribute("class","button");
                     insert_button.setAttribute("id","insert-"+(x+1));
-                    insert_button.setAttribute("onclick","insert()");
+                    insert_button.setAttribute("onclick",id.split('-')[0]+"_insert()");
 
 
                     var temp_td = document.createElement("td");

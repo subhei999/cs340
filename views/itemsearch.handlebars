@@ -2,23 +2,13 @@
 <form class="form-inline"style="width:1000px; background-color:rgba(255, 255, 255,0.6)">
   <label>Item Name:</label>
   <input id="item-name" style="width:200px;" type="text" placeholder="Enter item name..." name="itemName">
-  <label>Rarity:</label>
+  <label>Quality:</label>
   <select id="item-quality" name="quality">
     <option disabled selected value> -- select an option -- </option>
-    <option value="Common">Common</option>
-    <option value="Uncommon">Uncommon</option>
-    <option value="Rare">Rare</option>
-    <option value="Epic">Epic</option>
-    <option value="Legendary">Legendary</option>
   </select>
- 
   <label>Type:</label>
-  <select name="Type">
+  <select id="item-subclass" name="subclass">
     <option disabled selected value> -- select an option -- </option>
-    <option value="Melee Weapon">Melee Weapon</option>
-    <option value="Trade Good">Trade Good</option>
-    <option value="Plate Helmet">Plate Helmet</option>
-    <option value="Consumable">Consumable</option>
   </select>
   <br><br>
   <button id="item-search-button"style="width:100px;" type="button">Search</button>
@@ -34,6 +24,5 @@
   <br><br>
   <button style="width:100px;" type="button" onclick="alert('Not implemented')">Search</button>
 </form>
-<div class="tooltip">Hover over me
-  <span class="tooltiptext">Tooltip text</span>
-</div>
+
+

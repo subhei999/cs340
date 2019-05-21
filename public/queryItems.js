@@ -1,5 +1,9 @@
+
 //const HOST = "http://flip3.engr.oregonstate.edu:8080";
-const HOST = "http://localhost:8080";
+//const HOST = "http://localhost:8080";
+const HOST = "";
+
+
 var itemDamageData;
 var itemStatsData;
 
@@ -23,25 +27,24 @@ function appendItemTableRow(rowData,table)
 }
 
 
-function QueryItems(itemName,itemQuality)
+function QueryItems(itemName,itemQuality,itemSubClass)
 {
-    var itemClass = ""
-
     var req = new XMLHttpRequest();
-    req.open("GET",HOST+"/queryitem?itemName="+itemName+"&itemQuality="+itemQuality+"&itemClass="+itemClass,true)
+    req.open("GET",HOST+"/queryitem?itemName="+itemName+"&itemQuality="+itemQuality+"&itemSubClass="+itemSubClass,true)
     req.send(null);
 
     req.onreadystatechange = function() {//async
         if(req.readyState == 4 && req.status == 200) 
         {
             var data = JSON.parse(req.responseText);
-            BuildItemTable(data);
+            
             if(data.cod == "404")
             {
                 alert(data.message);
             }
             else
             {
+                BuildItemTable(data);
                 console.log(data);
             }
             
@@ -143,9 +146,7 @@ function CreateItemToolTip(itemresult,itemDamage,itemStats)
 
     }
 
-    var requiredLevel = document.createElement("p");
-    requiredLevel.setAttribute("class","item-text");
-    requiredLevel.innerText = "Requires Level "+ itemresult.RequiredLevel;
+
 
     if(!(itemresult.BindingText === "No binding"))
     {
@@ -160,6 +161,14 @@ function CreateItemToolTip(itemresult,itemDamage,itemStats)
         unique.setAttribute("class","item-text");
         unique.innerText = "Unique";
         container.appendChild(unique);
+    }
+
+    if(itemresult.armor > 0)
+    {
+        var armor = document.createElement("p");
+        armor.setAttribute("class","item-text");
+        armor.innerText = itemresult.armor +" armor";
+        container.appendChild(armor);
     }
 
     //append all item damages to tooltip
@@ -221,7 +230,14 @@ function CreateItemToolTip(itemresult,itemDamage,itemStats)
         });
    }
 
-    container.appendChild(requiredLevel);
+   if(itemresult.RequiredLevel > 1)
+   {
+
+       var requiredLevel = document.createElement("p");
+       requiredLevel.setAttribute("class","item-text");
+       requiredLevel.innerText = "Requires Level "+ itemresult.RequiredLevel;
+       container.appendChild(requiredLevel);
+   }
 
 
     if(!(itemresult.FlavorText.length === 0))
@@ -313,7 +329,83 @@ function FindElements(arr, propName, propValue) {
   
     // will return undefined if not found; you could return a default instead
   }
-  
+
+
+function GetItemQualityList(){
+    GetRequest(HOST+"/queryitemquality", [], [], SetItemQualityOptions)
+}
+
+function SetItemQualityOptions(data)
+{
+    var itemQualitySelect = document.getElementById("item-quality");
+    data.forEach((element)=>{
+        var newChild = document.createElement("option");
+        newChild.value = element.quality;
+        newChild.innerText = element.quality;
+        itemQualitySelect.appendChild(newChild);
+
+    });
+}
+function GetItemSubClassList(){
+    GetRequest(HOST+"/queryitemsubclass", [], [], SetItemSubClassOptions)
+}
+
+function SetItemSubClassOptions(data)
+{
+    var itemQualitySelect = document.getElementById("item-subclass");
+    data.forEach((element)=>{
+        var newChild = document.createElement("option");
+        newChild.value = element.subclass;
+        newChild.innerText = element.subclass;
+        itemQualitySelect.appendChild(newChild);
+
+    });
+}
+
+
+function GetRequest(url,qParams,qValues,callback)
+{
+    var req = new XMLHttpRequest();
+
+    var reqStr = url + '?';
+
+    if(qParams.length != qValues.length)
+    {
+        console.log("Invalid Get Request");
+        return;
+    }
+
+    for (let index = 0; index < qParams.length; index++) {
+        const param = qParams[index];
+        const value = qValues[index];
+
+        reqStr += param + '=' + value;
+        
+        if(index != qParams.length - 1)
+            reqStr += '&';
+
+    }
+    req.open("GET",reqStr,true);
+    req.send(null);
+
+    req.onreadystatechange = function() {//async
+        if(req.readyState == 4 && req.status == 200) 
+        {
+            var data = JSON.parse(req.responseText);
+            
+            if(data.cod == "404")
+            {
+                alert(data.message);
+            }
+            else
+            {
+                callback(data);
+               
+            }
+            
+        }
+    }
+}
 
 (function(window, document, undefined){
 
@@ -322,21 +414,34 @@ function FindElements(arr, propName, propValue) {
     
     function init(){
 
+        //cached queries
         QueryItemStats();
         QueryItemDamage();
+        GetItemQualityList();
+        GetItemSubClassList();
+
         var itemSearchButton = document.getElementById("item-search-button");
 
         itemSearchButton.addEventListener('click', function(){
 
-            var qualityIdx = document.getElementById("item-quality").selectedIndex;
-            var itemQuality = document.getElementsByTagName("option")[qualityIdx].value;
+            
             var itemName = document.getElementById("item-name").value;
 
+            var selectQuality = document.getElementById("item-quality");
+            var qualityIdx = selectQuality.selectedIndex;
+            var itemQuality = document.getElementsByTagName("option")[qualityIdx].value;
+
+            var selectSubClass = document.getElementById("item-subclass");
+            var subClassIdx = selectSubClass.selectedIndex;
+            var itemSubClass = selectSubClass.getElementsByTagName("option")[subClassIdx].value;
+
             var table = document.getElementById("item-table");
+
             while (table.firstChild) {
                 table.removeChild(table.firstChild);
             }
-            QueryItems(itemName,itemQuality);
+
+            QueryItems(itemName,itemQuality,itemSubClass);
 
         });
     }

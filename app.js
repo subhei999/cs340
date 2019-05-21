@@ -18,8 +18,8 @@ app.get('/', (req, res) => {
   res.render('home.handlebars');
 });
 
-app.get('/createaccount', (req, res) => {
-  res.render('createaccount.handlebars');
+app.get('/accountcreation', (req, res) => {
+  res.render('accountcreation.handlebars');
 });
 
 app.get('/itemsearch', (req, res) => {
@@ -111,10 +111,10 @@ app.get('/queryitem',function(req,res,next){
     LEFT JOIN mmo_itemSubClass MISC on MISC.class_id = MIC.ID\
     INNER JOIN mmo_itemQuality MIQ on MIQ.id = MMIT.itemQuality_id\
     LEFT JOIN mmo_itemIcon MII on MII.ID = MMIT.itemIcon_id\
-    WHERE MISC.subclass_id = MMIT.itemSubClass_id AND MIC.Classname_enUS like ? AND MMIT.name like ? AND MIQ.quality like ?\
+    WHERE MISC.subclass_id = MMIT.itemSubClass_id AND MISC.subclass like ? AND MMIT.name like ? AND MIQ.quality like ?\
     ORDER BY MMIT.ItemLevel DESC\
     LIMIT 500",
-     ['%'+req.query.itemClass,req.query.itemName+'%',req.query.itemQuality+"%"],function(err, rows, fields){
+     [req.query.itemSubClass+'%',req.query.itemName+'%',req.query.itemQuality+'%'],function(err, rows, fields){
     if(err){
       next(err);
       return;
@@ -146,6 +146,39 @@ app.get('/queryitemdamage',function(req,res,next){
   });
 });
 
+app.get('/queryitemquality',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MIQ.quality\
+    FROM mmo_itemQuality MIQ\
+    ORDER BY MIQ.id"
+    ,function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+app.get('/queryitemsubclass',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MISC.subclass\
+    FROM mmo_itemSubClass MISC\
+    ORDER BY MISC.class_id"
+    ,function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
 
 app.get('/queryitemstats',function(req,res,next){
   var context = {};
@@ -165,6 +198,163 @@ app.get('/queryitemstats',function(req,res,next){
     res.end(context.results);
   });
 });
+
+app.get('/querycharacters',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MA.email as account, MCH.name as name, MC.name as class,\
+   MR.name as race, MCH.lvl as lvl\
+  FROM mmo_character MCH\
+  INNER JOIN mmo_account MA ON MA.id = MCH.account_id\
+  INNER JOIN mmo_race MR ON MR.id = MCH.race_id\
+  INNER JOIN mmo_class MC ON MC.id = MCH.class_id\
+  WHERE MR.name LIKE ? AND MC.name LIKE ?"
+    ,[req.query.race+'%',req.query.class+'%'],function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+app.get('/queryaccount',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MA.id,MA.email\
+  FROM mmo_account MA"
+    ,function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+app.get('/queryrace',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MR.id,MR.name as race\
+  FROM mmo_race MR"
+    ,function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+app.get('/queryclass',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MC.id, MC.name as class\
+  FROM mmo_class MC"
+    ,function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+app.get('/countcharacterrace',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MR.name,count(MCH.id) as race_count\
+  FROM mmo_character MCH\
+  INNER JOIN mmo_race MR ON MR.id = MCH.race_id\
+  GROUP BY MR.name"
+    ,function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+app.get('/countcharacterclass',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MC.name,count(MCH.id) as class_count\
+  FROM mmo_character MCH\
+  INNER JOIN mmo_class MC ON MC.id = MCH.class_id\
+  GROUP BY MC.name"
+    ,function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+
+
+
+app.get('/insertaccount',function(req,res,next){
+  var context = {};
+  mysql.pool.query("INSERT INTO mmo_account (`email`,`password`,`Banned`,`Offense`) VALUES (?,?,?,?)", 
+  [req.query.email,req.query.password,req.query.banned,req.query.offense], function(err, result){
+    if(err){
+      next(err);
+      return;
+    }
+    res.type("application/json");
+    context.results = "Inserted id " + result.insertId;
+    console.log("inserted db entry");
+    res.sendStatus(200);
+
+  });
+});
+
+app.get('/createcharacter',function(req,res,next){
+  var context = {};
+  mysql.pool.query("INSERT INTO mmo_character (`account_id`,`name`,`race_id`,`class_id`) VALUES (?,?,?,?)", 
+  [req.query.account,req.query.name,req.query.race,req.query.class], function(err, result){
+    if(err){
+      next(err);
+      return;
+    }
+    res.type("application/json");
+    context.results = "Inserted id " + result.insertId;
+    console.log("inserted db entry");
+    res.sendStatus(200);
+
+  });
+});
+
+app.get('/createaccount',function(req,res,next){
+  var context = {};
+  mysql.pool.query("INSERT INTO mmo_account (`email`,`password`) VALUES (?,?)", 
+  [req.query.email,req.query.psw], function(err, result){
+    if(err){
+      next(err);
+      return;
+    }
+    res.type("application/json");
+    context.results = "Inserted id " + result.insertId;
+    console.log("inserted db entry");
+    res.sendStatus(200);
+
+  });
+});
+
 
 
 // Start the server

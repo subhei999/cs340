@@ -13,6 +13,26 @@ WHERE MISC.subclass_id = MMIT.itemSubClass_id
 order by MMIT.ItemLevel desc
 LIMIT 100
 
+-- get race of characters for pie chart
+SELECT MR.name,count(MCH.id) as race_count
+FROM mmo_character MCH
+INNER JOIN mmo_race MR ON MR.id = MCH.race_id
+GROUP BY MR.name
+
+-- get characters with race or class
+SELECT MA.email as account, MCH.name as name, MC.name as class, MR.name as race, MCH.lvl as lvl
+FROM mmo_character MCH
+INNER JOIN mmo_account MA ON MA.id = MCH.account_id
+INNER JOIN mmo_race MR ON MR.id = MCH.race_id
+INNER JOIN mmo_class MC ON MC.id = MCH.class_id
+WHERE MR.name LIKE '%' AND MC.name LIKE '%'
+
+-- get class of characters for pie chart
+SELECT MC.name,count(MCH.id) as class_count
+FROM mmo_character MCH
+INNER JOIN mmo_class MC ON MC.id = MCH.class_id
+GROUP BY MC.name
+
 -- get all characters created in the MMO and display name,race,class,lvl sort by lvl
 -- display this when going to Character page on website
 SELECT MCH.name, MCH.lvl, MR.name as 'Race', MCL.name as 'Class' 
