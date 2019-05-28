@@ -268,6 +268,43 @@ app.get('/queryclass',function(req,res,next){
   });
 });
 
+
+app.get('/querycountries',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT DISTINCT WC.country\
+  FROM worldcities WC"
+    ,function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+app.get('/querycities',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT WC.city\
+  FROM worldcities WC\
+  WHERE WC.country LIKE ?",
+    [req.query.country+'%'],function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+
+
+
 app.get('/countcharacterrace',function(req,res,next){
   var context = {};
   mysql.pool.query("SELECT MR.name,count(MCH.id) as race_count\

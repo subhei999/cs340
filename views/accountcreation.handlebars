@@ -1,3 +1,8 @@
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="static/queryAccount.js"></script>
   <form class="modal-content" action="/createaccount">
     <div class="container">
       <h1 style="color:beige;">Create Account</h1>
@@ -11,17 +16,16 @@
 
       <label for="psw-repeat" style="color:beige;"><b>Repeat Password</b></label>
       <input type="password"   placeholder="Repeat Password" name="psw-repeat" required>
-      <label><b>Country:</b></label>
-      <select name="Country">
-        <option disabled selected value> -- select an option -- </option>
-        <option value="United States"></option>
-      </select>
-      <label><b>City:</b></label>
-      <select name="City">
-        <option disabled selected value> -- select an option -- </option>
-        <option value="Portland"></option>
-      </select>
-
+      <div class="ui-widget">
+        <label for="country-input">Country: </label>
+        <input id="country-input">
+      </div>
+      <br><br><br>
+      <div class="ui-widget">
+        <label for="city-input">City: </label>
+        <input id="city-input">
+      </div>
+      <br>
       <p style="color:beige;" >By creating an account you forfeit your data.</p>
 
       <div class="clearfix">
