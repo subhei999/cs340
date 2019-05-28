@@ -2,6 +2,7 @@
 
 const express = require('express');
 const app = express();
+var bodyParser = require('body-parser')
 
 
 var mysql = require('./dbcon.js');
@@ -10,7 +11,10 @@ var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
 // Use the built-in express middleware for serving static files from './public'
 app.use('/static', express.static('public'));
 
@@ -376,20 +380,55 @@ app.get('/createcharacter',function(req,res,next){
   });
 });
 
-app.get('/createaccount',function(req,res,next){
+app.post('/createaccount',function(req,res,next){
   var context = {};
-  mysql.pool.query("INSERT INTO mmo_account (`email`,`password`) VALUES (?,?)", 
-  [req.query.email,req.query.psw], function(err, result){
+  mysql.pool.query("SELECT MA.email\
+  FROM mmo_account MA\
+  WHERE MA.email = ?\
+  LIMIT 1"
+    ,[req.body.email],function(err, result){
     if(err){
       next(err);
       return;
     }
-    res.type("application/json");
-    context.results = "Inserted id " + result.insertId;
-    console.log("inserted db entry");
-    res.sendStatus(200);
+    
+    if(result.length == 0)
+    {
+
+      mysql.pool.query("SELECT WC.id\
+      FROM worldcities WC\
+      WHERE WC.country = ? AND WC.city = ?\
+      LIMIT 1", 
+      [req.body.country,req.body.city], function(err, result){
+        if(err){
+          next(err);
+          return;
+        }
+
+        mysql.pool.query("INSERT INTO mmo_account (`email`,`password`,`city_id`) VALUES (?,?,?)", 
+        [req.body.email,req.body.psw,result[0]['id']], function(err, result){
+          if(err){
+            next(err);
+            return;
+          }
+          context.results = "Inserted id " + result.insertId;
+          res.render("accountcreation",{data:'Account created successfully!',color:'green'});
+        });
+
+      });
+
+
+
+    }
+    else
+    {
+      res.render('accountcreation',{data:'Account creation failed. Duplicate email found.',color:'red'})
+    }
+   
 
   });
+
+
 });
 
 
