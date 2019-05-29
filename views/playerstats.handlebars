@@ -1,4 +1,4 @@
-<h1>Player View</h1>
+
 
 <!-- Resources -->
 <script src="https://www.amcharts.com/lib/4/core.js"></script>
@@ -8,6 +8,7 @@
 <script src="static/queryPlayer.js"></script>
 
 <!-- HTML -->
+<h2>Create Character</h2>
 <div style="top:0px;right:0%;width:700px;height:300px;">
     <div id="popRacediv"></div>
 </div>
@@ -21,16 +22,14 @@
   <select id="account-select" name="Account">
     <option disabled selected value> -- select an account -- </option>
   </select>
-  <label>Player Name:</label>
   <input style="width:200px;" type="text" placeholder="Enter player name..." name="CharName">
-  <label>Race:</label>
     <select id='race-select' name="Race">
     <option disabled selected value> -- select a race -- </option>
     </select>
-      <label>Class:</label>
     <select id='class-select' name="Class">
     <option disabled selected value> -- select a class -- </option>
     </select>
+    
   <br><br>
   <button style="width:100px;" type="button" onclick="CreateCharacter()">Create Character</button>
 </form>
@@ -51,3 +50,21 @@
     <table id="char-table">
  </table>
  </div>
+<h2>Modify Character</h2>
+<h3>{{message}}</h3>
+<form class="form-inline" id="modify-char" style="width:50%; background-color:rgba(255, 255, 255,0.6)" method="POST" action="/updatecharacter">
+  <select id="update-account-select" name="email">
+    <option disabled selected value> -- select an account -- </option>
+  </select>
+  <select id="update-character-select" style="width:200px;" name="name">
+    <option disabled selected value> -- select a character -- </option>
+    </select>
+    <label>Lvl</label>
+    <input name="lvl" type="number">
+    <label>Max HP</label>
+    <input name="maxHP" type="number">
+    <label>Max Mana</label>
+    <input name="maxMana" type="number">
+  <br><br>
+  <button style="width:100px;" type="submit">Modify Character</button>
+</form>

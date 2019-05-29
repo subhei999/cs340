@@ -206,13 +206,30 @@ app.get('/queryitemstats',function(req,res,next){
 app.get('/querycharacters',function(req,res,next){
   var context = {};
   mysql.pool.query("SELECT MA.email as account, MCH.name as name, MC.name as class,\
-   MR.name as race, MCH.lvl as lvl\
+   MR.name as race, MCH.lvl as lvl, MCH.maxHP, MCH.maxMana\
   FROM mmo_character MCH\
   INNER JOIN mmo_account MA ON MA.id = MCH.account_id\
   INNER JOIN mmo_race MR ON MR.id = MCH.race_id\
   INNER JOIN mmo_class MC ON MC.id = MCH.class_id\
   WHERE MR.name LIKE ? AND MC.name LIKE ?"
     ,[req.query.race+'%',req.query.class+'%'],function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+app.get('/queryaccountcharacters',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MCH.name\
+  FROM mmo_character MCH\
+  WHERE MCH.account_id = ?"
+    ,[req.query.email],function(err, rows, fields){
     if(err){
       next(err);
       return;
@@ -306,9 +323,6 @@ app.get('/querycities',function(req,res,next){
   });
 });
 
-
-
-
 app.get('/countcharacterrace',function(req,res,next){
   var context = {};
   mysql.pool.query("SELECT MR.name,count(MCH.id) as race_count\
@@ -344,9 +358,6 @@ app.get('/countcharacterclass',function(req,res,next){
     res.end(context.results);
   });
 });
-
-
-
 
 app.get('/insertaccount',function(req,res,next){
   var context = {};
@@ -394,7 +405,6 @@ app.post('/createaccount',function(req,res,next){
     
     if(result.length == 0)
     {
-
       mysql.pool.query("SELECT WC.id\
       FROM worldcities WC\
       WHERE WC.country = ? AND WC.city = ?\
@@ -416,22 +426,45 @@ app.post('/createaccount',function(req,res,next){
         });
 
       });
-
-
-
     }
     else
     {
       res.render('accountcreation',{data:'Account creation failed. Duplicate email found.',color:'red'})
     }
-   
-
   });
-
-
 });
 
-
+app.post('/updatecharacter',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT *\
+  FROM mmo_character MCH\
+  WHERE MCH.name=? and MCH.account_id = ?\
+  LIMIT 1", [req.body.name,req.body.email], function(err, result){
+    if(err){
+      next(err);
+      return;
+    }
+    if(result.length == 1){
+      var curVals = result[0];
+      mysql.pool.query("UPDATE mmo_character MCH\
+      SET name=?, lvl=?, maxHP=?, maxMana=?\
+      WHERE MCH.id=?",
+        [req.body.name || curVals.name,
+        req.body.lvl || curVals.lvl,
+        req.body.maxHP || curVals.maxHP,
+        req.body.maxMana|| curVals.maxMana,
+        curVals.id],
+        function(err, result){
+        if(err){
+          next(err);
+          return;
+        }
+        context.results = "Updated " + result.changedRows + " rows.";
+        res.render('playerstats',{message:result.message})
+      });
+    }
+  });
+});
 
 // Start the server
 const PORT = process.env.PORT || 8080;

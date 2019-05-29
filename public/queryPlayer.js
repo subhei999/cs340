@@ -218,7 +218,7 @@ function BuildCharTable(queryResult)
     table.appendChild(CreateCharTableHeader());
 
     queryResult.forEach(char => {
-        var rowData = [char.account,char.name,char.class,char.race,char.lvl];
+        var rowData = [char.account,char.name,char.class,char.race,char.lvl,char.maxHP,char.maxMana];
         appendCharTableRow(rowData,table);
 
     });
@@ -234,18 +234,24 @@ function CreateCharTableHeader()
     var th_class = document.createElement("th");
     var th_race = document.createElement("th");
     var th_lvl = document.createElement("th");
+    var th_maxHP = document.createElement("th");
+    var th_maxMana = document.createElement("th");
     
     th_account.innerText = "Account";
     th_name.innerText = "Name";
     th_class.innerText = "Class";
     th_race.innerText = "Race";
     th_lvl.innerText = "Lvl";
+    th_maxHP.innerText ="MaxHP";
+    th_maxMana.innerText = "MaxMana";
 
     tr.appendChild(th_account);
     tr.appendChild(th_name);
     tr.appendChild(th_class);
     tr.appendChild(th_race);
     tr.appendChild(th_lvl);
+    tr.appendChild(th_maxHP);
+    tr.appendChild(th_maxMana);
 
     return tr;
 
@@ -276,11 +282,13 @@ function GetAccountList(){
 function SetAccountOptions(data)
 {
     var select = document.getElementById("account-select");
+    var select2 = document.getElementById("update-account-select");
     data.forEach((element)=>{
         var newChild = document.createElement("option");
         newChild.value = element.id;
         newChild.innerText = element.email;
         select.appendChild(newChild);
+        select2.appendChild(newChild);
 
     });
 }
@@ -296,6 +304,30 @@ function SetRaceOptions(data)
         var newChild = document.createElement("option");
         newChild.value = element.id;
         newChild.innerText = element.race;
+        select.appendChild(newChild);
+
+    });
+}
+
+function GetAccountCharacterList()
+{
+    var e = document.getElementById("update-account-select");
+    var email = e.options[e.selectedIndex].value;
+    GetRequest('/queryaccountcharacters', ['email'], [email], SetAccountCharacterOptions)
+}
+
+
+function SetAccountCharacterOptions(data)
+{
+    var select = document.getElementById("update-character-select");
+    var length = select.options.length;
+    for (i = 0; i < length; i++) {
+      select.options[i] = null;
+    }
+    data.forEach((element)=>{
+        var newChild = document.createElement("option");
+        newChild.value = element.name;
+        newChild.innerText = element.name;
         select.appendChild(newChild);
 
     });
@@ -343,6 +375,7 @@ function UpdatePieCharts()
         GetAccountList();
         GetClassList();
         GetRaceList();
+        setInterval(GetAccountCharacterList,5000);
 
         
     }
