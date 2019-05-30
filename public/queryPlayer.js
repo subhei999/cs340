@@ -126,7 +126,7 @@ am4core.ready(function() {
 
 
 
-    function GetRequest(url,qParams,qValues,callback)
+function GetRequest(url,qParams,qValues,callback)
 {
     var req = new XMLHttpRequest();
 
@@ -320,10 +320,11 @@ function GetAccountCharacterList()
 function SetAccountCharacterOptions(data)
 {
     var select = document.getElementById("update-character-select");
-    var length = select.options.length;
-    for (i = 0; i < length; i++) {
-      select.options[i] = null;
+    while (select.firstChild != null)
+    {
+        select.removeChild(select.firstChild);
     }
+  
     data.forEach((element)=>{
         var newChild = document.createElement("option");
         newChild.value = element.name;
@@ -375,7 +376,7 @@ function UpdatePieCharts()
         GetAccountList();
         GetClassList();
         GetRaceList();
-        setInterval(GetAccountCharacterList,5000);
+       
 
         
     }

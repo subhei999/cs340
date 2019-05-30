@@ -257,6 +257,26 @@ app.get('/queryaccount',function(req,res,next){
   });
 });
 
+
+app.get('/queryaccountmap',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT WC.lat as latitude, WC.lng as longitude,MA.email, MA.Offense\
+  FROM mmo_account MA\
+  INNER JOIN worldcities WC ON WC.id = MA.city_id\
+  WHERE MA.Banned = ?",
+    [req.query.banned],function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(rows);
+    
+    res.writeHead(200,{'Content-Type':'application/json'});
+    res.end(context.results);
+  });
+});
+
+
 app.get('/queryrace',function(req,res,next){
   var context = {};
   mysql.pool.query("SELECT MR.id,MR.name as race\

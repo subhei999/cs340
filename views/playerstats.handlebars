@@ -33,19 +33,6 @@
   <br><br>
   <button style="width:100px;" type="button" onclick="CreateCharacter()">Create Character</button>
 </form>
-{{!-- <h2>Inventory Editor</h2> --}}
-{{!-- <form class="form-inline"style="width:50%; background-color:rgba(255, 255, 255,0.6)">
-  <label>Item Name:</label>
-  <input style="width:200px;" type="text" placeholder="Enter item name..." name="itemName">
-  <label>Player:</label>
-  <select name="Player">
-    <option disabled selected value> -- select a player -- </option>
-    <option value="q1">query result 1</option>
-    <option value="q2">query result 2</option>
-  </select>
-  <br><br>
-  <button style="width:100px;" type="button" onclick="alert('Not implemented')">Add to Inventory</button>
-</form> --}}
  <div id="char-query-result">
     <table id="char-table">
  </table>
@@ -53,7 +40,7 @@
 <h2>Modify Character</h2>
 <h3>{{message}}</h3>
 <form class="form-inline" id="modify-char" style="width:50%; background-color:rgba(255, 255, 255,0.6)" method="POST" action="/updatecharacter">
-  <select id="update-account-select" name="email">
+  <select id="update-account-select" name="email" onchange="GetAccountCharacterList()" >
     <option disabled selected value> -- select an account -- </option>
   </select>
   <select id="update-character-select" style="width:200px;" name="name">
