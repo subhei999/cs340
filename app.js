@@ -38,6 +38,15 @@ app.get('/playerstats', (req, res) => {
   res.render('playerstats.handlebars');
 });
 
+app.get('/inventoryAdd', (req, res) => {
+  res.render('inventoryadd.handlebars');
+});
+app.get('/inventoryDel', (req, res) => {
+  res.render('inventorydel.handlebars');
+});
+app.get('/inventory', (req, res) => {
+  res.render('inventory.handlebars');
+});
 //manual db table editing 
 app.get('/modify', (req, res) => {
   res.render('tablelist.handlebars');
@@ -128,6 +137,48 @@ app.get('/queryitem',function(req,res,next){
     res.writeHead(200,{'Content-Type':'application/json'});
     res.end(context.results);
   });
+});
+
+
+app.get('/queryinventory',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MC.id\
+  FROM mmo_character MC\
+  WHERE MC.account_id = ? AND MC.name = ?\
+  LIMIT 1"
+    ,[req.query.account,req.query.character],function(err, resultCharacter){
+    if(err){
+      next(err);
+      return;
+    }
+    mysql.pool.query(
+      "SELECT MMIT.name, MMIT.ItemLevel, MIQ.quality, MIB.Description,\
+      MIC.Classname_enUS, MISC.subclass,MII.inventoryIcon,MMIT.Description as FlavorText,\
+      MIQ.Color,MMIT.RequiredLevel,MIB.Description as BindingText,\
+      MMIT.maxcount,MMIT.delay as attack_time, MMIT.armor, MMIT.MaxDurability\
+      FROM mmo_itemTemplate MMIT\
+     INNER JOIN mmo_itemBonding MIB on MIB.id = MMIT.itemBonding_id\
+     INNER JOIN mmo_itemClass MIC on MIC.ID = MMIT.itemClass_id\
+     INNER JOIN mmo_itemSubClass MISC on MISC.class_id = MIC.ID\
+     INNER JOIN mmo_itemQuality MIQ on MIQ.id = MMIT.itemQuality_id\
+     LEFT JOIN mmo_itemIcon MII on MII.ID = MMIT.itemIcon_id\
+     WHERE  MISC.subclass_id = MMIT.itemSubClass_id AND MMIT.id IN (SELECT MI.item_id FROM mmo_inventory MI WHERE 	MI.character_id = ?)\
+     ORDER BY MMIT.ItemLevel DESC\
+     LIMIT 500",
+       [resultCharacter[0].id],function(err, rows, fields){
+      if(err){
+        next(err);
+        return;
+      }
+      context.results = JSON.stringify(rows);
+      
+      res.writeHead(200,{'Content-Type':'application/json'});
+      res.end(context.results);
+    });
+
+  });
+
+  
 });
 
 
@@ -378,6 +429,87 @@ app.get('/countcharacterclass',function(req,res,next){
     res.end(context.results);
   });
 });
+
+
+app.post('/inventoryAdd',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MC.id\
+  FROM mmo_character MC\
+  WHERE MC.account_id = ? AND MC.name = ?\
+  LIMIT 1"
+    ,[req.query.account,req.query.character],function(err, resultCharacter){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(resultCharacter);
+    mysql.pool.query("SELECT MIT.id\
+    FROM mmo_itemTemplate MIT\
+    WHERE MIT.name = ?\
+    LIMIT 1"
+      ,[req.query.item],function(err, resultItem){
+      if(err){
+        next(err);
+        return;
+      }
+      context.results = JSON.stringify(resultItem);
+      mysql.pool.query("INSERT INTO mmo_inventory\
+      (`character_id`,`item_id`)\
+      VALUES (?,?)"
+        ,[resultCharacter[0].id,resultItem[0].id],function(err, result){
+        if(err){
+          next(err);
+          return;
+        }
+
+        res.render("inventoryadd",{data:result.message});
+      });
+
+      
+    });
+    
+  });
+});
+
+app.post('/inventoryDel',function(req,res,next){
+  var context = {};
+  mysql.pool.query("SELECT MC.id\
+  FROM mmo_character MC\
+  WHERE MC.account_id = ? AND MC.name = ?\
+  LIMIT 1"
+    ,[req.query.account,req.query.character],function(err, resultCharacter){
+    if(err){
+      next(err);
+      return;
+    }
+    context.results = JSON.stringify(resultCharacter);
+    mysql.pool.query("SELECT MIT.id\
+    FROM mmo_itemTemplate MIT\
+    WHERE MIT.name = ?\
+    LIMIT 1"
+      ,[req.query.item],function(err, resultItem){
+      if(err){
+        next(err);
+        return;
+      }
+      context.results = JSON.stringify(resultItem);
+      mysql.pool.query("DELETE FROM mmo_inventory\
+      WHERE character_id = ? AND item_id = ?"
+        ,[resultCharacter[0].id,resultItem[0].id],function(err, result){
+        if(err){
+          next(err);
+          return;
+        }
+
+        res.render("inventory",{data:result.message});
+      });
+
+      
+    });
+    
+  });
+});
+
 
 app.get('/insertaccount',function(req,res,next){
   var context = {};

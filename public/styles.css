@@ -394,8 +394,8 @@ body { background-color: #30303d; color: #fff; }
   margin-top: 1px;
   margin-bottom: 1px;
   filter:brightness(200%)
-  
 }
+
 .item-text-right{
   height: 0px;
   position: relative;
@@ -456,3 +456,4 @@ body { background-color: #30303d; color: #fff; }
   min-width: 150px;
   
 }
+

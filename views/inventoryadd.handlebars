@@ -1,5 +1,17 @@
-<script src="static/queryItems.js"></script>
-
+<script src="static/queryInventoryAdd.js"></script>
+<h3>{{data}}</h3>
+<h2>1. Select Character</h2>
+<form class="form-inline"style="width:50%; background-color:rgba(255, 255, 255,0.6)">
+  <select id="account-select" name="Account" onchange="GetAccountCharacterList()">
+    <option disabled selected value> -- select an account -- </option>
+  </select> 
+  <select id="character-select" name="Account">
+    <option disabled selected value> -- select a character -- </option>
+  </select> 
+  <br>
+</form>
+<br>
+<h2>2. Add Items to Inventory</h2>
 <form class="form-inline"style="width:1000px; background-color:rgba(255, 255, 255,0.6)">
   <label>Item Name:</label>
   <input id="item-name" style="width:200px;" type="text" placeholder="Enter item name..." name="itemName">
@@ -18,9 +30,3 @@
     <table id="item-table">
  </table>
  </div>
-
-
- 
-
-
-
