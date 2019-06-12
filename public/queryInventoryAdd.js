@@ -282,7 +282,7 @@ function inventoryAdd(event)
     var characterName = document.getElementById("character-select").value;
     var accountName = document.getElementById("account-select").value
     var itemName = event.target.parentNode.parentNode.children[1].innerText;//name of item
-    PostRequest('/inventoryadd',['character','account','item'],[characterName,accountName,itemName])
+    PostRequest('/additemtoinventory',['character','account','item'],[characterName,accountName,itemName])
 }
 
 
@@ -397,13 +397,20 @@ function PostRequest(url,qParams,qValues,callback)
     }
     req.open("POST",reqStr,true);
     req.send(null);
-
+    
     req.onreadystatechange = function() {//async
         if(req.readyState == 4 && req.status == 200) 
         {
-            
+           document.getElementById("res").innerText = "Added item to inventory"
+           document.getElementById("res").style.color = "green";
+        }
+        else
+        {
+        document.getElementById("res").innerText = "Something went wrong"
+           document.getElementById("res").style.color = "red";
         }
     }
+    
 }
 
 function GetRequest(url,qParams,qValues,callback)
@@ -515,7 +522,7 @@ function SetAccountCharacterOptions(data)
 
             var selectQuality = document.getElementById("item-quality");
             var qualityIdx = selectQuality.selectedIndex;
-            var itemQuality = document.getElementsByTagName("option")[qualityIdx].value;
+            var itemQuality = selectQuality.getElementsByTagName("option")[qualityIdx].value;
 
             var selectSubClass = document.getElementById("item-subclass");
             var subClassIdx = selectSubClass.selectedIndex;

@@ -431,7 +431,7 @@ app.get('/countcharacterclass',function(req,res,next){
 });
 
 
-app.post('/inventoryAdd',function(req,res,next){
+app.post('/additemtoinventory',function(req,res,next){
   var context = {};
   mysql.pool.query("SELECT MC.id\
   FROM mmo_character MC\
@@ -452,6 +452,13 @@ app.post('/inventoryAdd',function(req,res,next){
         next(err);
         return;
       }
+
+      if (resultItem.length <= 0 || resultCharacter.length <= 0)
+      {
+        res.status(500).send("Nooo");
+        return;
+      }
+
       context.results = JSON.stringify(resultItem);
       mysql.pool.query("INSERT INTO mmo_inventory\
       (`character_id`,`item_id`)\
@@ -462,7 +469,7 @@ app.post('/inventoryAdd',function(req,res,next){
           return;
         }
 
-        res.render("inventoryadd",{data:result.message});
+        res.status(200).send("Ok");
       });
 
       
@@ -544,14 +551,15 @@ app.get('/createcharacter',function(req,res,next){
 });
 
 app.post('/createaccount',function(req,res,next){
+  
   var context = {};
   mysql.pool.query("SELECT MA.email\
   FROM mmo_account MA\
   WHERE MA.email = ?\
   LIMIT 1"
-    ,[req.body.email],function(err, result){
-    if(err){
-      next(err);
+    ,[req.body.email],function(err1, result){
+    if(err1){
+      next(err1);
       return;
     }
     
@@ -561,16 +569,23 @@ app.post('/createaccount',function(req,res,next){
       FROM worldcities WC\
       WHERE WC.country = ? AND WC.city = ?\
       LIMIT 1", 
-      [req.body.country,req.body.city], function(err, result){
-        if(err){
-          next(err);
+      [req.body.country,req.body.city], function(err2, result){
+        if(err2){
+          next(err2);
           return;
         }
 
+        if(result.length <= 0)
+        {
+          res.render('accountcreation',{data:'Account creation failed.',color:'red'})
+          return;
+        }
+
+
         mysql.pool.query("INSERT INTO mmo_account (`email`,`password`,`city_id`) VALUES (?,?,?)", 
-        [req.body.email,req.body.psw,result[0]['id']], function(err, result){
-          if(err){
-            next(err);
+        [req.body.email,req.body.psw,result[0]['id']], function(err3, result){
+          if(err3){
+            next(err3);
             return;
           }
           context.results = "Inserted id " + result.insertId;
