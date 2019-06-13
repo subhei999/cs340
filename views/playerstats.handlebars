@@ -8,16 +8,20 @@
 <script src="static/queryPlayer.js"></script>
 
 <!-- HTML -->
+<h2 style="color:{{color}}">{{data}}</h2>
 <h2>Create Character</h2>
 <div style="top:0px;right:0%;width:700px;height:300px;">
+  <h2>Character Race</h2>
     <div id="popRacediv"></div>
 </div>
 <div style="top:400px;right:0%;width:700px;height:300px;">
+  <h2>Character Class</h2>
     <div id="popClassdiv"></div>
 </div>
-{{!-- <h2>Display Player count for each faction and ratio.</h2>
-<h2>Wealthiest player on server is {query result}</h2>
-<h2>Section to create a new player from drop down account list</h2> --}}
+<div style="top:600px;left:0%;width:700px;height:500px;">
+    <h2>Character Faction</h2>
+    <div id="popFactiondiv"></div>
+</div>
 <form class="form-inline"style="width:50%; background-color:rgba(255, 255, 255,0.6)">
   <select id="account-select" name="Account">
     <option disabled selected value> -- select an account -- </option>

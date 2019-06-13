@@ -42,12 +42,12 @@ imageSeries = chart.series.push(new am4maps.MapImageSeries());
 // Create a circle image in image series template so it gets replicated to all new images
 var imageSeriesTemplate = imageSeries.mapImages.template;
 var circle = imageSeriesTemplate.createChild(am4core.Circle);
-circle.radius = 3;
+circle.radius = 5;
 circle.fill = am4core.color("red");
 circle.stroke = am4core.color("#FFFFFF");
 circle.strokeWidth = 2;
 circle.nonScaling = true;
-circle.tooltipText = "{email}\n Ban Reason: DDOS";
+circle.tooltipText = "{email}\n Ban Reason: {Offense}";
 
 // Set property fields
 imageSeriesTemplate.propertyFields.latitude = "latitude";
@@ -57,12 +57,12 @@ imageSeriesTemplate.propertyFields.longitude = "longitude";
 imageSeries1 = chart.series.push(new am4maps.MapImageSeries());
 var imageSeriesTemplate = imageSeries1.mapImages.template;
 var circle = imageSeriesTemplate.createChild(am4core.Circle);
-circle.radius = 3;
+circle.radius = 5;
 circle.fill = am4core.color("green");
 circle.stroke = am4core.color("#FFFFFF");
 circle.strokeWidth = 2;
 circle.nonScaling = true;
-circle.tooltipText = "{email}\n Last active: 1 hr";
+circle.tooltipText = "{email}";
 
 // Set property fields
 imageSeriesTemplate.propertyFields.latitude = "latitude";

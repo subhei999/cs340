@@ -1,6 +1,7 @@
 
 var chart_race;
 var chart_class;
+var chart_faction;
 
 am4core.ready(function() {
 
@@ -56,13 +57,9 @@ am4core.ready(function() {
     pieSeries.slices.template.strokeOpacity = 1;
     pieSeries.slices.template.events.on("hit",function(ev){
         console.log(ev.target.dataItem.properties.category)
-        GetRequest('/querycharacters', ['race','class'], [ev.target.dataItem.properties.category,''], BuildCharTable)
+        GetRequest('/querycharacters', ['race','class','faction'], [ev.target.dataItem.properties.category,'',''], BuildCharTable)
     });
 
-    
-    
-    
-    
     // This creates initial animation
     pieSeries.hiddenState.properties.opacity = 1;
     pieSeries.hiddenState.properties.endAngle = -90;
@@ -119,8 +116,35 @@ am4core.ready(function() {
     pieSeries.hiddenState.properties.endAngle = -90;
     pieSeries.hiddenState.properties.startAngle = -90;
     pieSeries.slices.template.events.on("hit",function(ev){
-        GetRequest('/querycharacters', ['race','class'], ['',ev.target.dataItem.properties.category], BuildCharTable)
+        GetRequest('/querycharacters', ['race','class','faction'], ['',ev.target.dataItem.properties.category,''], BuildCharTable)
     });
+
+    chart_faction = am4core.create("popFactiondiv", am4charts.PieChart);
+    
+    // Add data
+    chart_faction.data = [ {
+        "Faction": "Alliance",
+         "Population": 0
+    },
+    {
+        "Faction": "Horde",
+        "Population": 0
+    },
+     ];
+    
+    // Add and configure Series
+    pieSeries = chart_faction.series.push(new am4charts.PieSeries());
+    pieSeries.dataFields.value = "Population";
+    pieSeries.dataFields.category = "Faction";
+    pieSeries.slices.template.stroke = am4core.color("#fff");
+    pieSeries.slices.template.strokeWidth = 2;
+    pieSeries.slices.template.strokeOpacity = 1;
+    pieSeries.slices.template.events.on("hit",function(ev){
+        console.log(ev.target.dataItem.properties.category)
+        GetRequest('/querycharacters', ['race','class','faction'], ['','',ev.target.dataItem.properties.category], BuildCharTable)
+    });
+
+
 
     }); // end am4core.ready()
 
@@ -206,6 +230,21 @@ function UpdateClassChart(data)
     chart_class.invalidateData();
 
 }
+function UpdateFactionChart(data)
+{
+    for (let index = 0; index < data.length; index++) {
+        var faction_name = data[index].name;
+        var faction_index;
+        
+        for (let j = 0; j < chart_faction.data.length; j++) {
+            if(chart_faction.data[j]['Faction'] == faction_name)
+                faction_index = j; 
+        }
+        chart_faction.data[faction_index]['Population'] = data[index].faction_count;
+    }
+    chart_faction.invalidateData();
+
+}
 
 function BuildCharTable(queryResult)
 {
@@ -287,8 +326,11 @@ function SetAccountOptions(data)
         var newChild = document.createElement("option");
         newChild.value = element.id;
         newChild.innerText = element.email;
+        var newChild2 = document.createElement("option");
+        newChild2.value = element.id;
+        newChild2.innerText = element.email;
         select.appendChild(newChild);
-        select2.appendChild(newChild);
+        select2.appendChild(newChild2);
 
     });
 }
@@ -356,13 +398,52 @@ function CreateCharacter()
     var name = document.getElementsByName("CharName")[0].value;
     var race = document.getElementsByName("Race")[0].value;
     var char_class = document.getElementsByName("Class")[0].value;
-    GetRequest('/createcharacter', ['account','name','race','class'], [account,name,race,char_class])
+    PostRequest('/createcharacter', ['account','name','race','class'], [account,name,race,char_class],UpdatePieCharts)
 }
 
 function UpdatePieCharts()
 {
     GetRequest('/countcharacterrace', [], [], UpdateRaceChart);
     GetRequest('/countcharacterclass', [], [], UpdateClassChart);
+    GetRequest('/countcharacterfaction', [], [], UpdateFactionChart);
+}
+
+function PostRequest(url,qParams,qValues,callback)
+{
+    var req = new XMLHttpRequest();
+
+    var reqStr = url + '?';
+
+    if(qParams.length != qValues.length)
+    {
+        console.log("Invalid Post Request");
+        return;
+    }
+
+    for (let index = 0; index < qParams.length; index++) {
+        const param = qParams[index];
+        const value = qValues[index];
+
+        reqStr += param + '=' + value;
+        
+        if(index != qParams.length - 1)
+            reqStr += '&';
+
+    }
+    req.open("POST",reqStr,true);
+    req.send(null);
+    
+    req.onreadystatechange = function() {//async
+        if(req.readyState == 4 && req.status == 200) 
+        {
+            callback();
+        }
+        else
+        {
+
+        }
+    }
+    
 }
 
 (function(window, document, undefined){

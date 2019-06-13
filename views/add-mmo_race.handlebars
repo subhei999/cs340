@@ -1,0 +1,96 @@
+
+<p>This page satisfies the project requirement that says each table must have working inserts. 
+  Tables that already have insert functionality in other parts of the website are not included here.</p>
+<script>
+
+    function GetRequest(url,qParams,qValues,callback)
+  {
+      var req = new XMLHttpRequest();
+
+      var reqStr = url + '?';
+
+      if(qParams.length != qValues.length)
+      {
+          console.log("Invalid Get Request");
+          return;
+      }
+
+      for (let index = 0; index < qParams.length; index++) {
+          const param = qParams[index];
+          const value = qValues[index];
+
+          reqStr += param + '=' + value;
+          
+          if(index != qParams.length - 1)
+              reqStr += '&';
+
+      }
+      req.open("GET",reqStr,true);
+      req.send(null);
+
+      req.onreadystatechange = function() {//async
+          if(req.readyState == 4 && req.status == 200) 
+          {
+              if(!(req.responseText === "OK"))
+              {
+                  var data = JSON.parse(req.responseText);
+                  
+                  if(data.cod == "404")
+                  {
+                      alert(data.message);
+                  }
+                  else
+                  {
+                      callback(data);
+                    
+                  }
+
+              }
+              
+          }
+      }
+  }
+
+
+function SetFactionOptions(data)
+{
+    var select = document.getElementById("faction-select");
+    data.forEach((element)=>{
+        var newChild = document.createElement("option");
+        newChild.value = element.id;
+        newChild.innerText = element.name;
+        select.appendChild(newChild);
+
+    });
+
+  
+}
+
+(function(window, document, undefined){
+
+
+    window.onload = init;
+    function init(){
+
+        
+      GetRequest("/queryfaction",[],[],SetFactionOptions)
+       
+
+        
+    }
+
+})(window, document, undefined);
+
+</script>
+<h2 style="color:{{color}}">{{data}}</h2>
+<form class="form-inline"style="width:1000px; background-color:rgba(255, 255, 255,0.6)" action="/insertrace" method="POST">
+  <label>Race Name</label>
+  <input  style="width:200px;" type="text" placeholder="Enter race name..." name="raceName">
+  <label>Faction</label>
+  <select id="faction-select" name="faction_id">
+    <option disabled selected value> -- select a faction -- </option>
+  </select> 
+    <label>Race Name</label>
+  <input  style="width:200px;" type="text" placeholder="Enter capital name..." name="capitalName">
+  <button style="width:100px;" type="submit">Submit</button>
+</form>

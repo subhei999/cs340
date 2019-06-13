@@ -50,8 +50,16 @@ function QueryItems(itemName,itemQuality,itemSubClass)
 }
 
 
-function QueryInventory(accountId,characterName)
+function QueryInventory()
 {
+    var table = document.getElementById("item-table");
+
+    while (table.firstChild) {
+        table.removeChild(table.firstChild);
+    }
+
+    var accountId = document.getElementById("account-select").value;
+    var characterName = document.getElementById("character-select").value;
     var req = new XMLHttpRequest();
     req.open("GET",HOST+"/queryinventory?account="+accountId+"&character="+characterName,true)
     req.send(null);
@@ -315,7 +323,7 @@ function inventoryDel(event)
     var characterName = document.getElementById("character-select").value;
     var accountName = document.getElementById("account-select").value
     var itemName = event.target.parentNode.parentNode.children[1].innerText;//name of item
-    PostRequest('/inventorydel',['character','account','item'],[characterName,accountName,itemName])
+    PostRequest('/inventorydel',['character','account','item'],[characterName,accountName,itemName],QueryInventory)
 }
 
 
@@ -434,7 +442,7 @@ function PostRequest(url,qParams,qValues,callback)
     req.onreadystatechange = function() {//async
         if(req.readyState == 4 && req.status == 200) 
         {
-            
+            callback()
         }
     }
 }
@@ -540,27 +548,7 @@ function SetAccountCharacterOptions(data)
         var itemSearchButton = document.getElementById("item-search-button");
 
         itemSearchButton.addEventListener('click', function(){
-
-            
-            // var itemName = document.getElementById("item-name").value;
-
-            // var selectQuality = document.getElementById("item-quality");
-            // var qualityIdx = selectQuality.selectedIndex;
-            // var itemQuality = document.getElementsByTagName("option")[qualityIdx].value;
-
-            // var selectSubClass = document.getElementById("item-subclass");
-            // var subClassIdx = selectSubClass.selectedIndex;
-            // var itemSubClass = selectSubClass.getElementsByTagName("option")[subClassIdx].value;
-            var accountId = document.getElementById("account-select").value;
-            var characterName = document.getElementById("character-select").value;
-
-            var table = document.getElementById("item-table");
-
-            while (table.firstChild) {
-                table.removeChild(table.firstChild);
-            }
-
-            QueryInventory(accountId,characterName);
+            QueryInventory();
 
         });
     }
