@@ -57,21 +57,6 @@ app.get('/add-mmo_class', (req, res) => {
 app.get('/add-mmo_faction', (req, res) => {
   res.render('add-mmo_faction.handlebars');
 });
-app.get('/add-mmo_itemBonding', (req, res) => {
-  res.render('add-mmo_itemBonding.handlebars');
-});
-app.get('/add-mmo_itemClass', (req, res) => {
-  res.render('add-mmo_itemClass.handlebars');
-});
-app.get('/add-mmo_itemDmgType', (req, res) => {
-  res.render('add-mmo_itemDmgType.handlebars');
-});
-app.get('/add-mmo_itemQuality', (req, res) => {
-  res.render('add-mmo_itemQuality.handlebars');
-});
-app.get('/add-mmo_itemStatType', (req, res) => {
-  res.render('add-mmo_itemStatType.handlebars');
-});
 app.get('/add-mmo_race', (req, res) => {
   res.render('add-mmo_race.handlebars');
 });
@@ -621,98 +606,6 @@ app.post('/insertfaction',function(req,res,next){
       res.render("add-mmo_faction",{data:"Inserted Entry Successfully ",color:"green"});
     else
       res.render("add-mmo_faction",{data:"Something went wrong ",color:"red"});
-
-  });
-});
-
-app.post('/insertitembonding',function(req,res,next){
-  var context = {};
-  mysql.pool.query("INSERT INTO mmo_itemBonding (`Description`) VALUES (?)", 
-  [req.body.Description], function(err, result){
-    if(err){
-      next(err);
-      return;
-    }
-    context.results = "Inserted id " + result.insertId;
-    console.log("inserted db entry");
-    if(result.serverStatus < 400)
-      res.render("add-mmo_itemBonding",{data:"Inserted Entry Successfully ",color:"green"});
-    else
-      res.render("add-mmo_itemBonding",{data:"Something went wrong ",color:"red"});
-
-  });
-});
-
-
-app.post('/insertitemclass',function(req,res,next){
-  var context = {};
-  mysql.pool.query("INSERT INTO mmo_itemClass (`Classname_enUS`) VALUES (?)", 
-  [req.body.itemClassName], function(err, result){
-    if(err){
-      next(err);
-      return;
-    }
-    context.results = "Inserted id " + result.insertId;
-    console.log("inserted db entry");
-    if(result.serverStatus < 400)
-      res.render("add-mmo_itemClass",{data:"Inserted Entry Successfully ",color:"green"});
-    else
-      res.render("add-mmo_itemClass",{data:"Something went wrong ",color:"red"});
-
-  });
-});
-
-app.post('/insertitemdmgtype',function(req,res,next){
-  var context = {};
-  mysql.pool.query("INSERT INTO mmo_itemDmgType (`Description`) VALUES (?)", 
-  [req.body.itemDmgType], function(err, result){
-    if(err){
-      next(err);
-      return;
-    }
-    context.results = "Inserted id " + result.insertId;
-    console.log("inserted db entry");
-    if(result.serverStatus < 400)
-      res.render("add-mmo_itemDmgType",{data:"Inserted Entry Successfully ",color:"green"});
-    else
-      res.render("add-mmo_itemDmgType",{data:"Something went wrong ",color:"red"});
-
-  });
-});
-
-
-app.post('/insertitemquality',function(req,res,next){
-  var context = {};
-  mysql.pool.query("INSERT INTO mmo_itemQuality (`color`,`quality`) VALUES (?,?)", 
-  [req.body.color,req.body.quality], function(err, result){
-    if(err){
-      next(err);
-      return;
-    }
-    context.results = "Inserted id " + result.insertId;
-    console.log("inserted db entry");
-    if(result.serverStatus < 400)
-      res.render("add-mmo_itemQuality",{data:"Inserted Entry Successfully ",color:"green"});
-    else
-      res.render("add-mmo_itemQuality",{data:"Something went wrong ",color:"red"});
-
-  });
-});
-
-app.post('/insertitemstattype',function(req,res,next){
-  var context = {};
-  mysql.pool.query("INSERT INTO mmo_itemStatType (`Description`) VALUES (?)", 
-  [req.body.itemStatType], function(err, result){
-    if(err){
-      next(err);
-      return;
-    }
-    context.results = "Inserted id " + result.insertId;
-    console.log("inserted db entry");
-    if(result.serverStatus < 400)
-      res.render("add-mmo_itemStatType",{data:"Inserted Entry Successfully ",color:"green"});
-    else
-      res.render("add-mmo_itemStatType",{data:"Something went wrong ",color:"red"});
 
   });
 });
